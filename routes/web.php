@@ -4,6 +4,8 @@ use App\Http\Controllers\Counselor\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Student\ReportController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,5 +39,17 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+Route::middleware(['auth', 'student'])
+    ->prefix('student')
+    ->name('student.')
+    ->group(function () {
+        Route::get('/', [HomeController::class, 'index'])->name('home');
+        Route::get('/report', [ReportController::class, 'create'])->name('report.create');
+        Route::post('/report', [ReportController::class, 'store'])->name('report.store');
+        Route::get('/report/{incident}/confirmation', [ReportController::class, 'confirmation'])->name('report.confirmation');
+    });
+
 
 require __DIR__.'/auth.php';
