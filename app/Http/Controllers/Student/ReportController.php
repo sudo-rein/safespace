@@ -9,6 +9,7 @@ use App\Services\TrackingCodeGenerator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class ReportController extends Controller
@@ -80,5 +81,23 @@ class ReportController extends Controller
         abort_unless($incident->reporter_user_id === auth()->id(), 403);
 
         return view('student.report-confirmation', ['incident' => $incident]);
+    }
+
+    public function index(): View
+    {
+        $incidents = Incident::where('reporter_user_id', auth()->id())
+            ->latest('submitted_at')
+            ->get();
+
+        return view('student.my-reports', ['incidents' => $incidents]);
+    }
+
+    public function show(Incident $incident): View
+    {
+        Gate::authorize('view', $incident);
+
+        $incident->load('location');
+
+        return view('student.report-show', ['incident' => $incident]);
     }
 }

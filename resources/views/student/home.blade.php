@@ -11,6 +11,10 @@
                    class="inline-block mt-4 px-4 py-2 bg-gray-800 text-white rounded-md text-sm">
                     Report an Incident
                 </a>
+                <a href="{{ route('student.reports.index') }}"
+                   class="inline-block mt-4 ml-4 px-4 py-2 bg-gray-800 text-white rounded-md text-sm">
+                    My Reports
+                </a>
             </div>
         </div>
     </div>
