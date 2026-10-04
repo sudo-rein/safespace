@@ -58,4 +58,8 @@ class Incident extends Model
             default => 'Received',
         };
     }
+    public function assessment(): \Illuminate\Database\Eloquent\Relations\HasOne
+{
+    return $this->hasOne(RiskAssessment::class)->latestOfMany();
+}
 }
