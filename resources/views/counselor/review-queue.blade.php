@@ -30,6 +30,7 @@
                                     {{ $incident->tracking_code }}
                                     @if ($incident->assessment?->urgent_flag)
                                         <span class="ms-1 px-2 py-0.5 rounded-full bg-red-600 text-white text-xs">URGENT</span>
+                                        <a href="{{ route('counselor.incidents.show', $incident) }}" class="underline">{{ $incident->tracking_code }}</a>
                                     @endif
                                 </td>
                                 <td>{{ $incident->submitted_at->format('M d, Y g:i A') }}</td>

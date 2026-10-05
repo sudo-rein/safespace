@@ -6,6 +6,7 @@ use App\Http\Controllers\Student\HomeController;
 use App\Http\Controllers\Student\ReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Counselor\ReviewQueueController;
+use App\Http\Controllers\Counselor\IncidentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,6 +42,8 @@ Route::middleware(['auth', 'counselor'])
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/queue', [ReviewQueueController::class, 'index'])->name('queue');
+        Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
+        Route::get('/incidents/{incident}/attachments/{attachment}', [IncidentController::class, 'attachment'])->name('incidents.attachment');
     });
     
 Route::middleware('auth')->group(function () {

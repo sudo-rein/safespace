@@ -48,6 +48,7 @@
                     <div class="flex justify-between items-center py-2 border-b last:border-0 text-sm">
                         <div>
                             <span class="font-semibold">{{ $incident->tracking_code }}</span>
+                            <a href="{{ route('counselor.incidents.show', $incident) }}" class="underline">{{ $incident->tracking_code }}</a>
                             <span class="text-gray-500 ms-2">{{ $incident->location?->name }}</span>
                         </div>
                         <div class="flex items-center gap-2">
