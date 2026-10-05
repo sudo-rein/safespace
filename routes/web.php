@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\HomeController;
 use App\Http\Controllers\Student\ReportController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Counselor\ReviewQueueController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,6 +17,7 @@ Route::get('/dashboard', function () {
         ? redirect()->route('counselor.dashboard')
         : redirect()->route('student.home');
 })->middleware('auth')->name('dashboard');
+
 
 // Student area
 Route::middleware(['auth', 'student'])
@@ -38,8 +40,9 @@ Route::middleware(['auth', 'counselor'])
     ->name('counselor.')
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/queue', [ReviewQueueController::class, 'index'])->name('queue');
     });
-
+    
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
