@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use App\Models\RiskAssessment;
+use App\Services\RiskClassifier;
 
 class ReportController extends Controller
 {
@@ -69,6 +71,27 @@ class ReportController extends Controller
                     'size' => $file->getSize(),
                 ]);
             }
+
+
+           $result = app(RiskClassifier::class)->classify(
+    $data['description'],
+    $request->boolean('someone_hurt')
+);
+
+RiskAssessment::create([
+    'incident_id' => $incident->id,
+    'system_risk' => $result['risk'],
+    'matched_words' => $result['matched_words'],
+    'urgent_flag' => $result['urgent'],
+    'reason' => $result['reason'],
+]);
+
+$incident->update([
+    'risk_level' => $result['risk'],
+    'risk_source' => 'system',
+]);
+
+
 
             return $incident;
         });
