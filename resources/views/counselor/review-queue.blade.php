@@ -27,6 +27,7 @@
                         @forelse ($incidents as $incident)
                             <tr class="border-b last:border-0 {{ $incident->assessment?->urgent_flag ? 'bg-red-50' : '' }}">
                                 <td class="py-2 font-semibold">
+                                    <a href="{{ route('counselor.incidents.show', $incident) }}" class="underline">{{ $incident->tracking_code }}</a>
                                     {{ $incident->tracking_code }}
                                     @if ($incident->assessment?->urgent_flag)
                                         <span class="ms-1 px-2 py-0.5 rounded-full bg-red-600 text-white text-xs">URGENT</span>

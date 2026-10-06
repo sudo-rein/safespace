@@ -44,6 +44,7 @@ Route::middleware(['auth', 'counselor'])
         Route::get('/queue', [ReviewQueueController::class, 'index'])->name('queue');
         Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
         Route::get('/incidents/{incident}/attachments/{attachment}', [IncidentController::class, 'attachment'])->name('incidents.attachment');
+        Route::post('/incidents/{incident}/risk', [IncidentController::class, 'overrideRisk'])->name('incidents.risk');
     });
     
 Route::middleware('auth')->group(function () {

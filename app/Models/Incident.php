@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
@@ -47,6 +48,16 @@ class Incident extends Model
         return $this->hasMany(IncidentAttachment::class);
     }
 
+    public function assessment(): HasOne
+    {
+        return $this->hasOne(RiskAssessment::class)->latestOfMany();
+    }
+
+    public function overrides(): HasMany
+    {
+        return $this->hasMany(RiskOverride::class)->latest();
+    }
+
     /** Simplified status shown to students (never counselor details). */
     public function studentStatus(): string
     {
@@ -58,8 +69,4 @@ class Incident extends Model
             default => 'Received',
         };
     }
-    public function assessment(): \Illuminate\Database\Eloquent\Relations\HasOne
-{
-    return $this->hasOne(RiskAssessment::class)->latestOfMany();
-}
 }
