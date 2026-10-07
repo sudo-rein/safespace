@@ -58,6 +58,11 @@ class Incident extends Model
         return $this->hasMany(RiskOverride::class)->latest();
     }
 
+    public function caseFile(): HasOne
+{
+    return $this->hasOne(CaseFile::class);
+}
+
     /** Simplified status shown to students (never counselor details). */
     public function studentStatus(): string
     {
