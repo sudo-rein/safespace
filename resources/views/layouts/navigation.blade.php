@@ -3,6 +3,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
+
+
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
@@ -12,11 +14,19 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-            </div>
+    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('counselor.dashboard') || request()->routeIs('student.home')">
+        {{ __('Dashboard') }}
+    </x-nav-link>
+
+    @if (auth()->user()->isCounselor())
+        <x-nav-link :href="route('counselor.queue')" :active="request()->routeIs('counselor.queue')">
+            Queue
+        </x-nav-link>
+        <x-nav-link :href="route('counselor.reports')" :active="request()->routeIs('counselor.reports*')">
+            Reports
+        </x-nav-link>
+    @endif
+</div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -72,6 +82,10 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+                @if (auth()->user()->isCounselor())
+    <x-responsive-nav-link :href="route('counselor.queue')">Queue</x-responsive-nav-link>
+    <x-responsive-nav-link :href="route('counselor.reports')">Reports</x-responsive-nav-link>
+@endif
             </x-responsive-nav-link>
         </div>
 
