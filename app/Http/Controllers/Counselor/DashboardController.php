@@ -10,6 +10,9 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     public function index(): View
+
+
+    
     
     {
         $urgentIds = RiskAssessment::where('urgent_flag', true)->select('incident_id');
@@ -31,8 +34,24 @@ class DashboardController extends Controller
             ->take(8)
             ->get();
 
-        return view('counselor.dashboard', compact('urgent', 'stats', 'recent'));
+            $monthly = Incident::selectRaw("DATE_FORMAT(submitted_at, '%Y-%m') as month, COUNT(*) as total")
+    ->where('submitted_at', '>=', now()->subMonths(5)->startOfMonth())
+    ->groupBy('month')->orderBy('month')->pluck('total', 'month');
+
+$byLocation = Incident::join('locations', 'locations.id', '=', 'incidents.location_id')
+    ->selectRaw('locations.name as name, COUNT(*) as total')
+    ->groupBy('locations.name')->orderByDesc('total')->limit(5)
+    ->pluck('total', 'name');
+
+$charts = [
+    'monthly' => ['labels' => $monthly->keys()->values(), 'data' => $monthly->values()],
+    'locations' => ['labels' => $byLocation->keys()->values(), 'data' => $byLocation->values()],
+    'risk' => [$stats['low'], $stats['medium_high']],
+];
+
+        return view('counselor.dashboard', compact('urgent', 'stats', 'recent', 'charts'));
     }
+    
 
     public function readNotification(string $id): \Illuminate\Http\RedirectResponse
 {

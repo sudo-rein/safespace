@@ -58,6 +58,40 @@
                 </div>
 
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-white shadow-sm sm:rounded-lg p-4">
+        <p class="text-sm font-semibold mb-2">Reports per month</p>
+        <canvas id="monthlyChart"></canvas>
+    </div>
+    <div class="bg-white shadow-sm sm:rounded-lg p-4">
+        <p class="text-sm font-semibold mb-2">Top locations</p>
+        <canvas id="locationChart"></canvas>
+    </div>
+    <div class="bg-white shadow-sm sm:rounded-lg p-4">
+        <p class="text-sm font-semibold mb-2">Risk split</p>
+        <canvas id="riskChart"></canvas>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const c = @json($charts);
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'bar',
+        data: { labels: c.monthly.labels, datasets: [{ label: 'Reports', data: c.monthly.data, backgroundColor: '#6b7280' }] },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+    new Chart(document.getElementById('locationChart'), {
+        type: 'bar',
+        data: { labels: c.locations.labels, datasets: [{ label: 'Reports', data: c.locations.data, backgroundColor: '#6b7280' }] },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+    new Chart(document.getElementById('riskChart'), {
+        type: 'doughnut',
+        data: { labels: ['Low', 'Medium to High'], datasets: [{ data: c.risk, backgroundColor: ['#facc15', '#f97316'] }] }
+    });
+});
+</script>
 
             {{-- Recent Reports --}}
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
