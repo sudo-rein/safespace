@@ -10,6 +10,7 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     public function index(): View
+    
     {
         $urgentIds = RiskAssessment::where('urgent_flag', true)->select('incident_id');
 
@@ -32,4 +33,17 @@ class DashboardController extends Controller
 
         return view('counselor.dashboard', compact('urgent', 'stats', 'recent'));
     }
+
+    public function readNotification(string $id): \Illuminate\Http\RedirectResponse
+{
+    $notification = auth()->user()->notifications()->findOrFail($id);
+    $notification->markAsRead();
+
+    return redirect()->route('counselor.incidents.show', $notification->data['incident_id']);
+}
+
+
+
+
+
 }

@@ -14,6 +14,11 @@ use Illuminate\View\View;
 use App\Models\RiskAssessment;
 use App\Services\RiskClassifier;
 
+use App\Models\User;
+use App\Notifications\NewIncidentAlert;
+use App\Notifications\UrgentIncidentAlert;
+use Illuminate\Support\Facades\Notification;
+
 class ReportController extends Controller
 {
     public function create(): View
@@ -91,6 +96,23 @@ $incident->update([
     'risk_source' => 'system',
 ]);
 
+
+$assessment = $incident->assessment()->first();
+
+if ($assessment?->urgent_flag || $incident->risk_level === 'medium_high') {
+    $counselors = User::where('role', 'counselor')->where('is_active', true)->get();
+
+    try {
+        Notification::send(
+            $counselors,
+            $assessment?->urgent_flag
+                ? new UrgentIncidentAlert($incident)
+                : new NewIncidentAlert($incident)
+        );
+    } catch (\Throwable $e) {
+        report($e); // a mail problem must never block a student's report
+    }
+}
 
 
             return $incident;

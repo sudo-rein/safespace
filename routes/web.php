@@ -43,6 +43,7 @@ Route::middleware(['auth', 'counselor'])
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/queue', [ReviewQueueController::class, 'index'])->name('queue');
+        Route::get('/notifications/{id}/read', [DashboardController::class, 'readNotification'])->name('notifications.read');
         Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
         Route::get('/incidents/{incident}/attachments/{attachment}', [IncidentController::class, 'attachment'])->name('incidents.attachment');
         Route::post('/incidents/{incident}/risk', [IncidentController::class, 'overrideRisk'])->name('incidents.risk');
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'counselor'])
         Route::post('/cases/{case}/follow-ups/{followUp}/done', [CaseController::class, 'completeFollowUp'])->name('cases.followups.done');
         Route::post('/cases/{case}/status', [CaseController::class, 'updateStatus'])->name('cases.status');
         Route::post('/cases/{case}/close', [CaseController::class, 'close'])->name('cases.close');
+        
     });
     
 Route::middleware('auth')->group(function () {
