@@ -33,6 +33,7 @@
                     <x-risk-badge :level="$case->incident->risk_level" size="sm" />
                     <span class="text-sm text-gray-500">Opened {{ $case->opened_at->format('M d, Y') }}</span>
                     <a href="{{ route('counselor.incidents.show', $case->incident) }}" class="underline text-sm text-gray-600">View report</a>
+                    <a href="{{ route('counselor.cases.pdf', $case) }}" class="underline text-sm text-gray-600">Download PDF</a>
                 </div>
 
                 @unless ($closed)

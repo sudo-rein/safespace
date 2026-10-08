@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CaseController extends Controller
 {
@@ -35,6 +36,7 @@ class CaseController extends Controller
 
         return redirect()->route('counselor.cases.show', $case);
     }
+    
 
     public function show(CaseFile $case): View
     {
@@ -128,6 +130,7 @@ class CaseController extends Controller
     }
 
     public function close(Request $request, CaseFile $case): RedirectResponse
+    
     {
         $this->ensureOpen($case);
 
@@ -148,6 +151,20 @@ class CaseController extends Controller
 
         return back()->with('status', 'Case closed.');
     }
+    public function pdf(CaseFile $case)
+{
+    $case->load([
+        'incident.location', 'incident.parties', 'incident.assessment',
+        'interventions', 'followUps', 'counselor',
+    ]);
+
+    AuditLogger::log('exported_case_pdf', $case);
+
+    $pdf = Pdf::loadView('counselor.case-pdf', ['case' => $case])
+        ->setPaper('a4');
+
+    return $pdf->download('SafeSpace-' . $case->incident->tracking_code . '.pdf');
+}
 
     private function ensureOpen(CaseFile $case): void
     {
