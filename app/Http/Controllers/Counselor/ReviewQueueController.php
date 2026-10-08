@@ -17,6 +17,15 @@ class ReviewQueueController extends Controller
             $query->where('risk_level', $request->query('risk'));
         }
 
+        $view = $request->query('view', 'active');
+
+if ($view === 'closed') {
+    $query->whereIn('status', ['closed', 'dismissed']);
+} elseif ($view === 'active') {
+    $query->whereNotIn('status', ['closed', 'dismissed']);
+}
+// 'all' shows everything
+
         // urgent first, then medium-high, then newest
         $incidents = $query->get()->sortBy([
             fn ($a, $b) => (int) ($b->assessment?->urgent_flag) <=> (int) ($a->assessment?->urgent_flag),

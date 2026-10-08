@@ -7,10 +7,22 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
 
-                <div class="flex gap-3 text-sm mb-4">
-                    <a href="{{ route('counselor.queue') }}" class="underline">All</a>
-                    <a href="{{ route('counselor.queue', ['risk' => 'medium_high']) }}" class="underline text-orange-700">Medium to High</a>
-                    <a href="{{ route('counselor.queue', ['risk' => 'low']) }}" class="underline text-yellow-700">Low</a>
+                <div class="flex flex-wrap gap-6 text-sm mb-4">
+                    <div class="flex gap-3">
+                        <span class="text-gray-500">Show:</span>
+                        <a href="{{ route('counselor.queue', ['view' => 'active', 'risk' => request('risk')]) }}"
+                           class="{{ request('view', 'active') === 'active' ? 'font-bold underline' : 'underline' }}">Active</a>
+                        <a href="{{ route('counselor.queue', ['view' => 'closed', 'risk' => request('risk')]) }}"
+                           class="{{ request('view') === 'closed' ? 'font-bold underline' : 'underline' }}">Closed</a>
+                        <a href="{{ route('counselor.queue', ['view' => 'all', 'risk' => request('risk')]) }}"
+                           class="{{ request('view') === 'all' ? 'font-bold underline' : 'underline' }}">All</a>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="text-gray-500">Risk:</span>
+                        <a href="{{ route('counselor.queue', ['view' => request('view', 'active')]) }}" class="underline">Any</a>
+                        <a href="{{ route('counselor.queue', ['view' => request('view', 'active'), 'risk' => 'medium_high']) }}" class="underline text-orange-700">Medium to High</a>
+                        <a href="{{ route('counselor.queue', ['view' => request('view', 'active'), 'risk' => 'low']) }}" class="underline text-yellow-700">Low</a>
+                    </div>
                 </div>
 
                 <table class="w-full text-sm text-left">
