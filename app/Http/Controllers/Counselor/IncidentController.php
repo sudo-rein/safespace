@@ -17,8 +17,8 @@ class IncidentController extends Controller
 {
     public function show(Incident $incident): View
     {
-        $incident->load(['location', 'parties', 'attachments', 'assessment', 'reporter', 'overrides.counselor']);
-
+        $incident->load(['location', 'parties', 'attachments', 'assessment', 'reporter', 'overrides.counselor', 'caseFile']);
+        
         AuditLogger::log('viewed_incident', $incident);
         // The reporter's name is shown on this page, so record the reveal.
         AuditLogger::log('revealed_reporter', $incident);

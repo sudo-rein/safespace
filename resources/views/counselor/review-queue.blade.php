@@ -9,8 +9,8 @@
 
                 <div class="flex gap-3 text-sm mb-4">
                     <a href="{{ route('counselor.queue') }}" class="underline">All</a>
-                    <a href="{{ route('counselor.queue', ['risk' => 'medium_high']) }}" class="underline text-red-700">Medium to High</a>
-                    <a href="{{ route('counselor.queue', ['risk' => 'low']) }}" class="underline text-green-700">Low</a>
+                    <a href="{{ route('counselor.queue', ['risk' => 'medium_high']) }}" class="underline text-orange-700">Medium to High</a>
+                    <a href="{{ route('counselor.queue', ['risk' => 'low']) }}" class="underline text-yellow-700">Low</a>
                 </div>
 
                 <table class="w-full text-sm text-left">
@@ -28,20 +28,13 @@
                             <tr class="border-b last:border-0 {{ $incident->assessment?->urgent_flag ? 'bg-red-50' : '' }}">
                                 <td class="py-2 font-semibold">
                                     <a href="{{ route('counselor.incidents.show', $incident) }}" class="underline">{{ $incident->tracking_code }}</a>
-                                    {{ $incident->tracking_code }}
                                     @if ($incident->assessment?->urgent_flag)
                                         <span class="ms-1 px-2 py-0.5 rounded-full bg-red-600 text-white text-xs">URGENT</span>
-                                        <a href="{{ route('counselor.incidents.show', $incident) }}" class="underline">{{ $incident->tracking_code }}</a>
                                     @endif
                                 </td>
                                 <td>{{ $incident->submitted_at->format('M d, Y g:i A') }}</td>
                                 <td>{{ $incident->location?->name }}</td>
-                                <td>
-                                    <span class="px-2 py-1 rounded-full text-xs
-                                        {{ $incident->risk_level === 'medium_high' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}">
-                                        {{ $incident->risk_level === 'medium_high' ? 'Medium to High' : 'Low' }}
-                                    </span>
-                                </td>
+                                <td><x-risk-badge :level="$incident->risk_level" /></td>
                                 <td>{{ ucfirst(str_replace('_', ' ', $incident->status)) }}</td>
                             </tr>
                         @empty

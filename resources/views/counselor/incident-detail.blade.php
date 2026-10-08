@@ -16,10 +16,11 @@
             {{-- Risk --}}
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <div class="flex items-center gap-3">
-                    <span class="px-3 py-1 rounded-full text-sm
-                        {{ $incident->risk_level === 'medium_high' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}">
-                        {{ $incident->risk_level === 'medium_high' ? 'Medium to High Risk' : 'Low Risk' }}
-                    </span>
+
+
+                    <x-risk-badge :level="$incident->risk_level" size="sm" />
+
+
                     <span class="text-xs text-gray-500">set by {{ $incident->risk_source }}</span>
                 </div>
                 <p class="text-sm text-gray-600 mt-2">{{ $incident->assessment?->reason }}</p>
@@ -118,6 +119,27 @@
                     <p class="text-sm text-gray-500">No files attached.</p>
                 @endforelse
             </div>
+            
+            
+            {{-- Case --}}
+<div class="bg-white shadow-sm sm:rounded-lg p-6">
+    @if ($incident->caseFile)
+        <p class="text-sm text-gray-600 mb-2">
+            Case opened {{ $incident->caseFile->opened_at->format('M d, Y') }}
+            @if ($incident->caseFile->closed_at) (closed) @endif
+        </p>
+        <a href="{{ route('counselor.cases.show', $incident->caseFile) }}"
+           class="inline-block px-4 py-2 bg-gray-800 text-white rounded-md text-sm">Go to case workspace</a>
+    @else
+        <form method="POST" action="{{ route('counselor.incidents.case.open', $incident) }}">
+            @csrf
+            <x-primary-button>Open Case</x-primary-button>
+        </form>
+    @endif
+</div>
+
+
+
 
             <a href="{{ route('counselor.queue') }}" class="inline-block underline text-sm text-gray-600">Back to queue</a>
         </div>
