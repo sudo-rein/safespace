@@ -75,6 +75,7 @@
                 </span>
             </label>
             <x-input-error :messages="$errors->get('privacy_consent')" class="mt-2" />
+            <a href="{{ route('privacy') }}" target="_blank" class="underline text-xs text-gray-600">Read the full privacy notice</a>
         </div>
 
         <div class="flex items-center justify-end mt-4">

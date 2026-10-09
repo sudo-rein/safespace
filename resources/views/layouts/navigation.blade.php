@@ -25,6 +25,10 @@
         <x-nav-link :href="route('counselor.reports')" :active="request()->routeIs('counselor.reports*')">
             Reports
         </x-nav-link>
+
+        <x-nav-link :href="route('counselor.students')" :active="request()->routeIs('counselor.students*')">Students</x-nav-link>
+
+     
     @endif
 </div>
 

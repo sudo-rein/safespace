@@ -10,6 +10,9 @@ use App\Http\Controllers\Counselor\IncidentController;
 use App\Http\Controllers\Counselor\CaseController;
 use App\Http\Controllers\Counselor\ReportExportController;
 
+
+use App\Http\Controllers\Counselor\StudentDataController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -20,6 +23,11 @@ Route::get('/dashboard', function () {
         ? redirect()->route('counselor.dashboard')
         : redirect()->route('student.home');
 })->middleware('auth')->name('dashboard');
+
+
+// testing area
+//privacy
+Route::view('/privacy', 'privacy.notice')->name('privacy');
 
 
 // Student area
@@ -58,6 +66,11 @@ Route::middleware(['auth', 'counselor'])
         Route::post('/cases/{case}/close', [CaseController::class, 'close'])->name('cases.close');
         Route::get('/cases/{case}/pdf', [CaseController::class, 'pdf'])->name('cases.pdf');Route::get('/reports', [ReportExportController::class, 'index'])->name('reports');
         Route::get('/reports/periodic', [ReportExportController::class, 'periodic'])->name('reports.periodic');
+
+
+
+        Route::get('/students', [StudentDataController::class, 'index'])->name('students');
+        Route::get('/students/{user}/export', [StudentDataController::class, 'export'])->name('students.export');
         
     });
     
