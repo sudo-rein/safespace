@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     CounselorSeeder::class,
     LocationSeeder::class,
     KeywordSeeder::class,
-    ]);
+    DemoStudentSeeder::class,
+]);
     }
 }
