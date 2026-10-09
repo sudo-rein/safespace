@@ -44,20 +44,25 @@ class RiskClassifier
             }
         }
 
-        $hasMediumHigh = collect($matches)->contains('group', 'medium_high');
+        $rank = ['low' => 1, 'medium' => 2, 'high' => 3];
+$risk = 'low';
 
-        if ($hasMediumHigh) {
-            $risk = 'medium_high';
-            $reason = 'Matched a physical, threat, weapon, self-harm, sexual, or cyber word.';
-        } elseif ($someoneHurt) {
-            $risk = 'medium_high';
-            $reason = 'Reporter indicated someone was physically hurt.';
-        } else {
-            $risk = 'low';
-            $reason = count($matches)
-                ? 'Verbal or social bullying words only.'
-                : 'No risk keywords found.';
-        }
+foreach ($matches as $m) {
+    if (($rank[$m['group']] ?? 1) > $rank[$risk]) {
+        $risk = $m['group'];
+    }
+}
+
+if ($risk === 'low' && $someoneHurt) {
+    $risk = 'medium';
+    $reason = 'Reporter indicated someone was physically hurt.';
+} elseif ($risk === 'high') {
+    $reason = 'Matched a threat, weapon, self-harm, or sexual word.';
+} elseif ($risk === 'medium') {
+    $reason = 'Matched a physical or cyber/extortion word.';
+} else {
+    $reason = count($matches) ? 'Verbal or social bullying words only.' : 'No risk keywords found.';
+}
 
         return [
             'risk' => $risk,

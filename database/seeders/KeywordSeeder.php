@@ -16,28 +16,28 @@ class KeywordSeeder extends Seeder
                 'ugly', 'fat', 'stupid', 'idiot', 'loser', 'dumb', 'pangit',
                 'taba', 'tanga', 'bobo', 'ulol', 'ayaw ka namin kasama',
             ]],
-            ['Physical', 'medium_high', false, [
+            ['Physical', 'medium', false, [
                 'sinuntok', 'binugbog', 'sinipa', 'sinampal', 'binatukan',
                 'sinakal', 'hinampas', 'pinalo', 'sinabunutan', 'tinulak',
                 'punch', 'punched', 'kick', 'kicked', 'hit me', 'beat me up', 'slapped', 'choked',
             ]],
-            ['Threats', 'medium_high', false, [
+            ['Threats', 'high', false, [
                 'papatayin kita', 'patayin', 'babalikan kita', 'sasaktan kita',
                 'kill you', 'i will kill', 'hurt you', 'wait for you after class',
             ]],
-            ['Weapons', 'medium_high', false, [
+            ['Weapons', 'high', false, [
                 'kutsilyo', 'baril', 'patalim', 'itak', 'knife', 'gun', 'blade', 'weapon',
             ]],
-            ['Self-harm', 'medium_high', true, [
+            ['Self-harm', 'high', true, [
                 'magpapakamatay', 'ayoko na mabuhay', 'gusto ko na mamatay',
                 'saktan ang sarili', 'saktan sarili', 'magpakamatay',
                 'suicide', 'kill myself', 'want to die', 'end my life', 'hurt myself',
             ]],
-            ['Sexual', 'medium_high', false, [
+            ['Sexual', 'high', false, [
                 'hinipuan', 'binastos', 'panghihipo', 'hinalikan ako',
                 'naked', 'nude', 'touched me', 'sexual',
             ]],
-            ['Cyber / Extortion', 'medium_high', false, [
+            ['Cyber / Extortion', 'medium', false, [
                 'ikakalat ko', 'leaked', 'blackmail', 'i will post', 'ipost ko',
                 'ikakalat ang picture', 'hinack',
             ]],
