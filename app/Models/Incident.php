@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'tracking_code', 'reporter_user_id', 'report_mode', 'incident_date',
+    'tracking_code', 'reporter_user_id', 'report_mode', 'incident_date', 'incident_time',
     'location_id', 'description', 'repeated', 'someone_hurt',
     'status', 'risk_level', 'risk_source', 'submitted_at',
 ])]

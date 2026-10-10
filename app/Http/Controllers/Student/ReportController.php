@@ -33,8 +33,9 @@ class ReportController extends Controller
         $data = $request->validate([
             'report_mode' => ['required', 'in:confidential,named'],
             'incident_date' => ['required', 'date', 'before_or_equal:today'],
+            'incident_time' => ['nullable', 'date_format:H:i'],
             'location_id' => ['required', 'exists:locations,id'],
-            'description' => ['required', 'string', 'min:10', 'max:5000'],
+            'description' => ['required', 'string', 'min:10', 'max:5000'],  
             'repeated' => ['nullable', 'boolean'],
             'someone_hurt' => ['nullable', 'boolean'],
             'parties' => ['nullable', 'array', 'max:10'],
@@ -54,6 +55,7 @@ class ReportController extends Controller
                 'description' => $data['description'],
                 'repeated' => $request->boolean('repeated'),
                 'someone_hurt' => $request->boolean('someone_hurt'),
+                'incident_time' => $data['incident_time'],
                 'status' => 'submitted',
                 'submitted_at' => now(),
             ]);

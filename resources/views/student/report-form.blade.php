@@ -29,28 +29,37 @@
                     <x-input-error :messages="$errors->get('report_mode')" class="mt-2" />
                 </div>
 
-                {{-- Date and location --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <x-input-label for="incident_date" value="When did it happen?" />
-                        <x-text-input id="incident_date" type="date" name="incident_date" class="block mt-1 w-full"
-                                      :value="old('incident_date')" max="{{ now()->toDateString() }}" required />
-                        <x-input-error :messages="$errors->get('incident_date')" class="mt-2" />
-                    </div>
-                    <div>
-                        <x-input-label for="location_id" value="Where did it happen?" />
-                        <select id="location_id" name="location_id" required
-                                class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">
-                            <option value="">Select a place</option>
-                            @foreach ($locations as $location)
-                                <option value="{{ $location->id }}" @selected(old('location_id') == $location->id)>
-                                    {{ $location->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <x-input-error :messages="$errors->get('location_id')" class="mt-2" />
-                    </div>
-                </div>
+                {{-- Date, time and location --}}
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div>
+        <x-input-label for="incident_date" value="When did it happen?" />
+        <x-text-input id="incident_date" type="date" name="incident_date" class="block mt-1 w-full"
+                      :value="old('incident_date')" max="{{ now()->toDateString() }}" required />
+        <x-input-error :messages="$errors->get('incident_date')" class="mt-2" />
+    </div>
+
+    <div>
+        <x-input-label for="incident_time" value="About what time? (optional)" />
+        <x-text-input id="incident_time" type="time" name="incident_time" class="block mt-1 w-full"
+                      :value="old('incident_time')" />
+        <x-input-error :messages="$errors->get('incident_time')" class="mt-2" />
+        <p class="text-xs text-gray-500 mt-1">Leave blank if you don't remember.</p>
+    </div>
+
+    <div>
+        <x-input-label for="location_id" value="Where did it happen?" />
+        <select id="location_id" name="location_id" required
+                class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">
+            <option value="">Select a place</option>
+            @foreach ($locations as $location)
+                <option value="{{ $location->id }}" @selected(old('location_id') == $location->id)>
+                    {{ $location->name }}
+                </option>
+            @endforeach
+        </select>
+        <x-input-error :messages="$errors->get('location_id')" class="mt-2" />
+    </div>
+</div>
 
                 {{-- People involved --}}
                 <div>
