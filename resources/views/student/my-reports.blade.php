@@ -13,12 +13,14 @@
                             <p class="font-semibold text-gray-900">{{ $incident->tracking_code }}</p>
                             <p class="text-sm text-gray-500">Submitted {{ $incident->submitted_at->format('M d, Y') }}</p>
                         </div>
-                        @if ($incident->unread_messages > 0)
-    <span class="ms-2 px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs">New message</span>
-@endif
-                        <span class="text-sm px-3 py-1 rounded-full bg-gray-100 text-gray-700">
-                            {{ $incident->studentStatus() }}
-                        </span>
+                        <div class="flex items-center gap-2">
+                            @if ($incident->unread_messages > 0)
+                                <span class="px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs">New message</span>
+                            @endif
+                            <span class="text-sm px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+                                {{ $incident->studentStatus() }}
+                            </span>
+                        </div>
                     </a>
                 @empty
                     <p class="text-gray-600">You haven't submitted any reports yet.</p>

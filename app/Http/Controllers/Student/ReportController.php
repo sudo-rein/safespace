@@ -133,14 +133,16 @@ if ($assessment?->urgent_flag || in_array($incident->risk_level, ['medium', 'hig
     }
 
     public function index(): View
-    {
-        $incidents = Incident::where('reporter_user_id', auth()->id())
-            ->latest('submitted_at')
-            ->get();
+{
+    $incidents = Incident::where('reporter_user_id', auth()->id())
+        ->withCount(['messages as unread_messages' => fn ($q) => $q
+            ->where('sender_id', '!=', auth()->id())
+            ->whereNull('read_at')])
+        ->latest('submitted_at')
+        ->get();
 
-        return view('student.my-reports', ['incidents' => $incidents]);
-    }
-
+    return view('student.my-reports', ['incidents' => $incidents]);
+}
     public function show(Incident $incident): View
     {
       Gate::authorize('view', $incident);

@@ -11,6 +11,8 @@ use App\Http\Controllers\Counselor\CaseController;
 use App\Http\Controllers\Counselor\ReportExportController;
 use App\Http\Controllers\Student\MessageController;
 
+use App\Http\Controllers\Counselor\MessageController as CounselorMessageController;
+
 use App\Http\Controllers\Counselor\StudentDataController;
 
 Route::get('/', function () {
@@ -70,7 +72,7 @@ Route::middleware(['auth', 'counselor'])
         Route::get('/reports/periodic', [ReportExportController::class, 'periodic'])->name('reports.periodic');
 
 
-
+        Route::post('/incidents/{incident}/messages', [CounselorMessageController::class, 'store'])->name('incidents.messages');
         Route::get('/students', [StudentDataController::class, 'index'])->name('students');
         Route::get('/students/{user}/export', [StudentDataController::class, 'export'])->name('students.export');
         

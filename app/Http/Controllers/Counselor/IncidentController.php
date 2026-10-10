@@ -17,7 +17,7 @@ class IncidentController extends Controller
 {
     public function show(Incident $incident): View
     {
-        $incident->load(['location', 'parties', 'attachments', 'assessment', 'reporter', 'overrides.counselor', 'caseFile']);
+        $incident->load(['location', 'parties', 'attachments', 'assessment', 'reporter', 'overrides.counselor', 'caseFile',  'messages.sender']);
         
         AuditLogger::log('viewed_incident', $incident);
         // The reporter's name is shown on this page, so record the reveal.
@@ -71,6 +71,11 @@ public function overrideRisk(Request $request, Incident $incident): RedirectResp
         'risk_level' => $data['new_risk'],
         'risk_source' => 'counselor',
     ]);
+
+    $incident->messages()
+    ->where('sender_id', $incident->reporter_user_id)
+    ->whereNull('read_at')
+    ->update(['read_at' => now()]);
 
     AuditLogger::log('changed_risk_level', $incident);
 
