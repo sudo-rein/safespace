@@ -9,7 +9,7 @@ use App\Http\Controllers\Counselor\ReviewQueueController;
 use App\Http\Controllers\Counselor\IncidentController;
 use App\Http\Controllers\Counselor\CaseController;
 use App\Http\Controllers\Counselor\ReportExportController;
-
+use App\Http\Controllers\Student\MessageController;
 
 use App\Http\Controllers\Counselor\StudentDataController;
 
@@ -43,6 +43,8 @@ Route::middleware(['auth', 'student'])
 
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/{incident}', [ReportController::class, 'show'])->name('reports.show');
+
+        Route::post('/reports/{incident}/messages', [MessageController::class, 'store'])->name('reports.messages');
     });
 
 // Counselor area

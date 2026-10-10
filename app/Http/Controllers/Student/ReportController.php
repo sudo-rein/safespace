@@ -28,6 +28,7 @@ class ReportController extends Controller
         ]);
     }
 
+    
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -60,6 +61,7 @@ class ReportController extends Controller
                 'submitted_at' => now(),
             ]);
 
+            
             foreach ($data['parties'] ?? [] as $party) {
                 if (! empty($party['name']) && ! empty($party['role'])) {
                     $incident->parties()->create([
@@ -141,10 +143,18 @@ if ($assessment?->urgent_flag || in_array($incident->risk_level, ['medium', 'hig
 
     public function show(Incident $incident): View
     {
-        Gate::authorize('view', $incident);
+      Gate::authorize('view', $incident);
 
-        $incident->load('location');
+$incident->load('location');
 
-        return view('student.report-show', ['incident' => $incident]);
+// Opening the report marks the counselor's messages as read
+$incident->messages()
+    ->where('sender_id', '!=', auth()->id())
+    ->whereNull('read_at')
+    ->update(['read_at' => now()]);
+
+$messages = $incident->messages()->get();
+
+return view('student.report-show', ['incident' => $incident, 'messages' => $messages]);
     }
 }

@@ -43,6 +43,10 @@ class Incident extends Model
         return $this->hasMany(IncidentParty::class);
     }
 
+    public function messages(): HasMany
+{
+    return $this->hasMany(Message::class)->oldest();
+}
     public function attachments(): HasMany
     {
         return $this->hasMany(IncidentAttachment::class);

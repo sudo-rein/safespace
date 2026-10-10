@@ -14,6 +14,32 @@
                     <p class="font-semibold">What you reported</p>
                     <p class="whitespace-pre-line">{{ $incident->description }}</p>
                 </div>
+                
+                <div class="border-t pt-4">
+    <p class="font-semibold mb-2">Messages with the guidance counselor</p>
+
+    <div class="space-y-2 mb-3">
+        @forelse ($messages as $m)
+            @php $mine = $m->sender_id === auth()->id(); @endphp
+            <div class="flex {{ $mine ? 'justify-end' : 'justify-start' }}">
+                <div class="max-w-md rounded-lg px-3 py-2 text-sm {{ $mine ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800' }}">
+                    <p class="whitespace-pre-line">{{ $m->body }}</p>
+                    <p class="text-xs opacity-70 mt-1">{{ $mine ? 'You' : 'Counselor' }} · {{ $m->created_at->format('M d, g:i A') }}</p>
+                </div>
+            </div>
+        @empty
+            <p class="text-sm text-gray-500">No messages yet. The counselor may reach out here.</p>
+        @endforelse
+    </div>
+
+    <form method="POST" action="{{ route('student.reports.messages', $incident) }}" class="space-y-2">
+        @csrf
+        <textarea name="body" rows="2" required maxlength="2000" placeholder="Write a message"
+                  class="block w-full border-gray-300 rounded-md shadow-sm text-sm"></textarea>
+        <x-input-error :messages="$errors->get('body')" />
+        <x-primary-button>Send</x-primary-button>
+    </form>
+</div>
                 <a href="{{ route('student.reports.index') }}" class="inline-block underline text-sm text-gray-600">Back to My Reports</a>
             </div>
         </div>
