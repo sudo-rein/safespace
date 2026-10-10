@@ -51,7 +51,7 @@ class IncidentController extends Controller
 public function overrideRisk(Request $request, Incident $incident): RedirectResponse
 {
     $data = $request->validate([
-        'new_risk' => ['required', 'in:low,medium_high'],
+        'new_risk' => ['required', 'in:low,medium,high'],
         'reason' => ['required', 'string', 'min:5', 'max:1000'],
     ]);
 

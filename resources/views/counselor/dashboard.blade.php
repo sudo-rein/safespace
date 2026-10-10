@@ -37,11 +37,19 @@
                 </div>
 
                 <div class="bg-white shadow-sm sm:rounded-lg p-4">
-                    <p class="text-sm text-gray-500">Medium to High</p>
+                    <p class="text-sm text-gray-500">Medium</p>
                     <p class="text-2xl font-bold text-orange-600">
-                        {{ $stats['medium_high'] }}
+                        {{ $stats['medium'] }}
                     </p>
                 </div>
+
+                 <div class="bg-white shadow-sm sm:rounded-lg p-4">
+                    <p class="text-sm text-gray-500">High</p>
+                    <p class="text-2xl font-bold text-red-600">
+                        {{ $stats['high'] }}
+                    </p>
+                </div>
+
 
                 <div class="bg-white shadow-sm sm:rounded-lg p-4">
                     <p class="text-sm text-gray-500">Low</p>
@@ -88,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     new Chart(document.getElementById('riskChart'), {
         type: 'doughnut',
-        data: { labels: ['Low', 'Medium to High'], datasets: [{ data: c.risk, backgroundColor: ['#facc15', '#f97316'] }] }
+        data: { labels: ['Low', 'Medium', 'High'], datasets: [{ data: c.risk, backgroundColor: ['#facc15', '#f97316','#ef4444'] }] }
     });
 });
 </script>

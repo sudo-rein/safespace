@@ -33,7 +33,8 @@ class ReportExportController extends Controller
         $stats = [
             'total' => $base()->count(),
             'low' => $base()->where('risk_level', 'low')->count(),
-            'medium_high' => $base()->where('risk_level', 'medium_high')->count(),
+            'medium' => $base()->where('risk_level', 'medium')->count(),
+            'high' => $base()->where('risk_level', 'high')->count(),
             'urgent' => RiskAssessment::where('urgent_flag', true)
                 ->whereIn('incident_id', $base()->select('id'))->count(),
             'cases_opened' => CaseFile::whereBetween('opened_at', [$from, $to])->count(),

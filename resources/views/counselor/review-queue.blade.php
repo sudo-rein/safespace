@@ -20,7 +20,8 @@
                     <div class="flex gap-3">
                         <span class="text-gray-500">Risk:</span>
                         <a href="{{ route('counselor.queue', ['view' => request('view', 'active')]) }}" class="underline">Any</a>
-                        <a href="{{ route('counselor.queue', ['view' => request('view', 'active'), 'risk' => 'medium_high']) }}" class="underline text-orange-700">Medium to High</a>
+                        <a href="{{ route('counselor.queue', ['view' => request('view', 'active'), 'risk' => 'medium']) }}" class="underline text-orange-700">Medium</a>
+                        <a href="{{ route('counselor.queue', ['view' => request('view', 'active'), 'risk' => 'high']) }}" class="underline text-red-700">High</a>
                         <a href="{{ route('counselor.queue', ['view' => request('view', 'active'), 'risk' => 'low']) }}" class="underline text-yellow-700">Low</a>
                     </div>
                 </div>

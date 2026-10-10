@@ -6,12 +6,14 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     public function up(): void
-    {
+{
+    if (DB::getDriverName() === 'mysql') {
         DB::statement("ALTER TABLE keyword_categories MODIFY severity_group VARCHAR(20) NOT NULL");
         DB::statement("ALTER TABLE incidents MODIFY risk_level VARCHAR(20) NULL");
         DB::statement("ALTER TABLE risk_assessments MODIFY system_risk VARCHAR(20) NOT NULL");
         DB::statement("ALTER TABLE risk_overrides MODIFY old_risk VARCHAR(20) NOT NULL");
         DB::statement("ALTER TABLE risk_overrides MODIFY new_risk VARCHAR(20) NOT NULL");
+    }
 
         // Keyword categories
         DB::table('keyword_categories')->where('severity_group', 'medium_high')->update(['severity_group' => 'medium']);

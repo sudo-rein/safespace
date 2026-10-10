@@ -25,7 +25,7 @@ return new class extends Migration
         'submitted', 'under_review', 'case_opened',
         'intervention', 'monitoring', 'resolved', 'closed', 'dismissed',
     ])->default('submitted');
-    $table->enum('risk_level', ['low', 'medium_high'])->nullable();
+    $table->enum('risk_level', ['low', 'medium', 'high'])->nullable();
     $table->enum('risk_source', ['system', 'counselor'])->nullable();
     $table->timestamp('submitted_at')->useCurrent();
     $table->softDeletes();

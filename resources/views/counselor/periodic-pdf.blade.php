@@ -20,7 +20,8 @@
     <table>
         <tr><th>Total reports</th><td>{{ $stats['total'] }}</td></tr>
         <tr><th>Low risk</th><td>{{ $stats['low'] }}</td></tr>
-        <tr><th>Medium to High risk</th><td>{{ $stats['medium_high'] }}</td></tr>
+        <tr><th>Medium risk</th><td>{{ $stats['medium'] }}</td></tr>
+        <tr><th>high risk</th><td>{{ $stats['high'] }}</td></tr>
         <tr><th>Urgent (self-harm indicators)</th><td>{{ $stats['urgent'] }}</td></tr>
         <tr><th>Cases opened</th><td>{{ $stats['cases_opened'] }}</td></tr>
         <tr><th>Cases closed</th><td>{{ $stats['cases_closed'] }}</td></tr>

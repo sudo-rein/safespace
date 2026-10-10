@@ -23,8 +23,8 @@
     <table>
         <tr><th>Risk level</th>
             <td>
-                <span class="badge {{ $case->incident->risk_level === 'medium_high' ? 'high' : 'low' }}">
-                    {{ $case->incident->risk_level === 'medium_high' ? 'Medium to High' : 'Low' }}
+                <span class="badge {{ ucfirst($case->incident->risk_level) }}
+                    
                 </span>
             </td></tr>
         <tr><th>Incident date</th><td>{{ $case->incident->incident_date->format('M d, Y') }}</td></tr>

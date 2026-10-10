@@ -23,12 +23,15 @@ class DashboardController extends Controller
             ->get();
 
         $stats = [
-            'new' => Incident::where('status', 'submitted')->count(),
-            'medium_high' => Incident::where('risk_level', 'medium_high')->count(),
-            'low' => Incident::where('risk_level', 'low')->count(),
-            'open_cases' => Incident::whereIn('status', ['case_opened', 'intervention', 'monitoring'])->count(),
-        ];
-
+    'new' => Incident::where('status', 'submitted')->count(),
+    'low' => Incident::where('risk_level', 'low')->count(),
+    'medium' => Incident::where('risk_level', 'medium')->count(),
+    'high' => Incident::where('risk_level', 'high')->count(),
+    'open_cases' => Incident::whereIn('status', ['case_opened', 'intervention', 'monitoring'])->count(),
+];
+        
+        
+        
         $recent = Incident::with(['location', 'assessment'])
             ->latest('submitted_at')
             ->take(8)
@@ -46,7 +49,7 @@ $byLocation = Incident::join('locations', 'locations.id', '=', 'incidents.locati
 $charts = [
     'monthly' => ['labels' => $monthly->keys()->values(), 'data' => $monthly->values()],
     'locations' => ['labels' => $byLocation->keys()->values(), 'data' => $byLocation->values()],
-    'risk' => [$stats['low'], $stats['medium_high']],
+    'risk' => [$stats['low'], $stats['medium'], $stats['high']],
 ];
 
         return view('counselor.dashboard', compact('urgent', 'stats', 'recent', 'charts'));

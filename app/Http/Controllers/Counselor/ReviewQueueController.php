@@ -13,7 +13,7 @@ class ReviewQueueController extends Controller
     {
         $query = Incident::with(['location', 'assessment']);
 
-        if (in_array($request->query('risk'), ['low', 'medium_high'], true)) {
+        if (in_array($request->query('risk'), ['low', 'medium', 'high'], true)) {
             $query->where('risk_level', $request->query('risk'));
         }
 

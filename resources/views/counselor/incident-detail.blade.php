@@ -45,10 +45,18 @@
                 <p class="font-semibold mb-2">Change risk level</p>
                 <form method="POST" action="{{ route('counselor.incidents.risk', $incident) }}" class="space-y-3">
                     @csrf
-                    <select name="new_risk" class="border-gray-300 rounded-md shadow-sm text-sm">
-                        <option value="low" @selected($incident->risk_level === 'low')>Low</option>
-                        <option value="medium_high" @selected($incident->risk_level === 'medium_high')>Medium to High</option>
-                    </select>
+
+
+
+                 <select name="new_risk" class="border-gray-300 rounded-md shadow-sm text-sm">
+    @foreach (['low' => 'Low', 'medium' => 'Medium', 'high' => 'High'] as $v => $label)
+        <option value="{{ $v }}" @selected($incident->risk_level === $v)>{{ $label }}</option>
+    @endforeach
+</select>
+
+
+
+
                     <textarea name="reason" rows="2" required placeholder="Reason for the change (required)"
                               class="block w-full border-gray-300 rounded-md shadow-sm text-sm">{{ old('reason') }}</textarea>
                     <x-input-error :messages="$errors->get('new_risk')" />
@@ -57,19 +65,17 @@
                 </form>
 
                 @if ($incident->overrides->isNotEmpty())
-                    <div class="mt-4 border-t pt-3 text-sm text-gray-600 space-y-1">
-                        <p class="font-semibold text-gray-800">History</p>
-                        @foreach ($incident->overrides as $o)
-                            <p>
-                                {{ $o->created_at->format('M d, Y g:i A') }}:
-                                {{ $o->old_risk === 'medium_high' ? 'Medium to High' : 'Low' }}
-                                →
-                                {{ $o->new_risk === 'medium_high' ? 'Medium to High' : 'Low' }}
-                                by {{ $o->counselor?->name }}. "{{ $o->reason }}"
-                            </p>
-                        @endforeach
-                    </div>
-                @endif
+    <div class="mt-4 border-t pt-3 text-sm text-gray-600 space-y-1">
+        <p class="font-semibold text-gray-800">History</p>
+        @foreach ($incident->overrides as $o)
+            <p>
+                {{ $o->created_at->format('M d, Y g:i A') }}:
+                {{ ucfirst($o->old_risk) }} → {{ ucfirst($o->new_risk) }}
+                by {{ $o->counselor?->name }}. "{{ $o->reason }}"
+            </p>
+        @endforeach
+    </div>
+@endif
             </div>
 
             {{-- Report --}}

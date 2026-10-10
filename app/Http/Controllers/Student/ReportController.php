@@ -99,7 +99,7 @@ $incident->update([
 
 $assessment = $incident->assessment()->first();
 
-if ($assessment?->urgent_flag || $incident->risk_level === 'medium_high') {
+if ($assessment?->urgent_flag || in_array($incident->risk_level, ['medium', 'high'], true)) {
     $counselors = User::where('role', 'counselor')->where('is_active', true)->get();
 
     try {

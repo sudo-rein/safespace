@@ -17,9 +17,11 @@ class NewIncidentAlert extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $level = ucfirst($this->incident->risk_level);
+
         return (new MailMessage)
-            ->subject('SafeSpace: new Medium to High report')
-            ->line('A new Medium to High risk report was submitted.')
+            ->subject("SafeSpace: new {$level} risk report")
+            ->line("A new {$level} risk report was submitted.")
             ->line('Reference: ' . $this->incident->tracking_code)
             ->action('Review report', route('counselor.incidents.show', $this->incident));
     }
@@ -29,8 +31,8 @@ class NewIncidentAlert extends Notification
         return [
             'incident_id' => $this->incident->id,
             'tracking_code' => $this->incident->tracking_code,
-            'message' => 'New Medium to High report ' . $this->incident->tracking_code,
-            'level' => 'medium_high',
+            'message' => 'New ' . ucfirst($this->incident->risk_level) . ' risk report ' . $this->incident->tracking_code,
+            'level' => $this->incident->risk_level,
         ];
     }
 }
