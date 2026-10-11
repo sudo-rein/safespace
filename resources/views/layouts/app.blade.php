@@ -32,5 +32,14 @@
                 {{ $slot }}
             </main>
         </div>
+
+        @auth
+    @if (auth()->user()->isStudent())
+        <x-chatbot-widget />
+    @endif
+@endauth
+
+
+
     </body>
 </html>

@@ -15,6 +15,8 @@ use App\Http\Controllers\Counselor\MessageController as CounselorMessageControll
 
 use App\Http\Controllers\Counselor\StudentDataController;
 
+use App\Http\Controllers\Student\ChatbotController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -49,6 +51,8 @@ Route::middleware(['auth', 'student'])
         Route::post('/reports/{incident}/messages', [MessageController::class, 'store'])->name('reports.messages');
 
         Route::get('/reports/{incident}/messages', [MessageController::class, 'index'])->name('reports.messages.index');
+        
+        Route::post('/chatbot', [ChatbotController::class, 'ask'])->name('chatbot')->middleware('throttle:30,1');
     });
 
 // Counselor area
