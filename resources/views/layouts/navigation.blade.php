@@ -19,17 +19,26 @@
     </x-nav-link>
 
     @if (auth()->user()->isCounselor())
-        <x-nav-link :href="route('counselor.queue')" :active="request()->routeIs('counselor.queue')">
-            Queue
-        </x-nav-link>
-        <x-nav-link :href="route('counselor.reports')" :active="request()->routeIs('counselor.reports*')">
-            Reports
-        </x-nav-link>
+    <x-nav-link :href="route('counselor.queue')" :active="request()->routeIs('counselor.queue')">
+        Queue
+    </x-nav-link>
+    <x-nav-link :href="route('counselor.reports')" :active="request()->routeIs('counselor.reports*')">
+        Reports
+    </x-nav-link>
+    <x-nav-link :href="route('counselor.students')" :active="request()->routeIs('counselor.students*')">
+        Students
+    </x-nav-link>
+    <x-nav-link :href="route('counselor.keywords')" :active="request()->routeIs('counselor.keywords*')">
+        Keywords
+    </x-nav-link>
+    <x-nav-link :href="route('counselor.audit')" :active="request()->routeIs('counselor.audit')">
+        Audit Log
+    </x-nav-link>
+    <x-nav-link :href="route('counselor.keywords')" :active="request()->routeIs('counselor.keywords')">
+        Keywords
+    </x-nav-link>
 
-        <x-nav-link :href="route('counselor.students')" :active="request()->routeIs('counselor.students*')">Students</x-nav-link>
-
-     
-    @endif
+@endif
 </div>
 
             <!-- Settings Dropdown -->

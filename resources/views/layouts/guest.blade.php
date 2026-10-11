@@ -26,5 +26,11 @@
                 {{ $slot }}
             </div>
         </div>
+
+<footer class="text-center text-xs text-gray-500 py-4">
+    <a href="{{ route('privacy') }}" class="underline">Privacy Notice</a> · SafeSpace · ECIS
+</footer>
+
+
     </body>
 </html>

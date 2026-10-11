@@ -17,6 +17,10 @@ use App\Http\Controllers\Counselor\StudentDataController;
 use App\Http\Controllers\Student\ChatbotController;
 
 
+use App\Http\Controllers\Counselor\AuditLogController;
+use App\Http\Controllers\Counselor\KeywordController;
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -54,6 +58,13 @@ Route::middleware(['auth', 'student'])
         
 
         Route::post('/chatbot', [ChatbotController::class, 'ask'])->name('chatbot')->middleware('throttle:30,1');
+
+
+        Route::post('/students/{user}/reset-password', [StudentDataController::class, 'resetPassword'])->name('students.reset');
+        Route::post('/students/{user}/toggle', [StudentDataController::class, 'toggleActive'])->name('students.toggle');
+        Route::delete('/students/{user}', [StudentDataController::class, 'destroy'])->name('students.destroy');
+
+
     });
 
 // Counselor area
@@ -84,7 +95,16 @@ Route::middleware(['auth', 'counselor'])
         Route::get('/students/{user}/export', [StudentDataController::class, 'export'])->name('students.export');
 
         Route::get('/incidents/{incident}/messages', [CounselorMessageController::class, 'index'])->name('incidents.messages.index');
+
+        Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit');
         
+
+
+
+        Route::get('/keywords', [KeywordController::class, 'index'])->name('keywords');
+        Route::post('/keywords', [KeywordController::class, 'store'])->name('keywords.store');
+        Route::post('/keywords/{keyword}/toggle', [KeywordController::class, 'toggle'])->name('keywords.toggle');
+        Route::delete('/keywords/{keyword}', [KeywordController::class, 'destroy'])->name('keywords.destroy');
     });
     
 Route::middleware('auth')->group(function () {

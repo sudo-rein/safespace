@@ -147,3 +147,8 @@ for original login
         </div>
     </form>
 </x-guest-layout>
+
+
+
+Replace [PLACEHOLDER] hotlines in config/chatbot.php
+BUKAS AYUSIN
