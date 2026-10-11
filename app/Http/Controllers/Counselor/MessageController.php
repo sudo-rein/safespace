@@ -25,4 +25,21 @@ class MessageController extends Controller
 
         return back()->with('status', 'Message sent.');
     }
+
+    public function index(Incident $incident)
+{
+    $incident->messages()
+        ->where('sender_id', $incident->reporter_user_id)
+        ->whereNull('read_at')
+        ->update(['read_at' => now()]);
+
+    return response()->json(
+        $incident->messages()->get()->map(fn ($m) => [
+            'id' => $m->id,
+            'body' => $m->body,
+            'mine' => $m->sender_id !== $incident->reporter_user_id,
+            'time' => $m->created_at->format('M d, g:i A'),
+        ])
+    );
+}
 }

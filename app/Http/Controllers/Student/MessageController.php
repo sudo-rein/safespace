@@ -28,7 +28,9 @@ class MessageController extends Controller
 
         try {
             Notification::send(
-                User::where('role', 'counselor')->where('is_active', true)->get(),
+                User::where('role', 'counselor')
+                    ->where('is_active', true)
+                    ->get(),
                 new NewChatMessage($incident)
             );
         } catch (\Throwable $e) {
@@ -37,4 +39,26 @@ class MessageController extends Controller
 
         return back();
     }
+
+    public function index(Incident $incident)
+    {
+        Gate::authorize('view', $incident);
+
+        $incident->messages()
+            ->where('sender_id', '!=', auth()->id())
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        return response()->json(
+            $incident->messages()
+                ->get()
+                ->map(fn ($m) => [
+                    'id' => $m->id,
+                    'body' => $m->body,
+                    'mine' => $m->sender_id === auth()->id(),
+                    'time' => $m->created_at->format('M d, g:i A'),
+                ])
+        );
+    }
 }
+

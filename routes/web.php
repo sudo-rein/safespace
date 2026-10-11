@@ -47,6 +47,8 @@ Route::middleware(['auth', 'student'])
         Route::get('/reports/{incident}', [ReportController::class, 'show'])->name('reports.show');
 
         Route::post('/reports/{incident}/messages', [MessageController::class, 'store'])->name('reports.messages');
+
+        Route::get('/reports/{incident}/messages', [MessageController::class, 'index'])->name('reports.messages.index');
     });
 
 // Counselor area
@@ -75,6 +77,8 @@ Route::middleware(['auth', 'counselor'])
         Route::post('/incidents/{incident}/messages', [CounselorMessageController::class, 'store'])->name('incidents.messages');
         Route::get('/students', [StudentDataController::class, 'index'])->name('students');
         Route::get('/students/{user}/export', [StudentDataController::class, 'export'])->name('students.export');
+
+        Route::get('/incidents/{incident}/messages', [CounselorMessageController::class, 'index'])->name('incidents.messages.index');
         
     });
     

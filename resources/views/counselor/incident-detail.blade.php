@@ -131,7 +131,7 @@
     <p class="font-semibold mb-1">Messages with the reporter</p>
     <p class="text-xs text-red-700 mb-3">Visible only to you and the reporter. Never share it with the parties involved.</p>
 
-    <div class="space-y-2 mb-3">
+    <div id="chatBox" class="space-y-2 mb-3">
         @forelse ($incident->messages as $m)
             @php $mine = $m->sender_id !== $incident->reporter_user_id; @endphp
             <div class="flex {{ $mine ? 'justify-end' : 'justify-start' }}">
@@ -182,3 +182,38 @@
         </div>
     </div>
 </x-app-layout>
+
+    <form method="POST" action="{{ route('counselor.incidents.messages', $incident) }}" class="space-y-2">
+        @csrf
+        <textarea name="body" rows="2" required maxlength="2000" placeholder="Write a message to the reporter"
+                  class="block w-full border-gray-300 rounded-md shadow-sm text-sm"></textarea>
+        <x-primary-button>Send</x-primary-button>
+    </form>
+
+    <script>
+    (function () {
+        const url = "{{ route('counselor.incidents.messages.index', $incident) }}";
+        const other = 'Reporter';
+        const box = document.getElementById('chatBox');
+        let lastId = {{ $incident->messages->last()?->id ?? 0 }};
+
+        async function poll() {
+            try {
+                const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                const data = await r.json();
+                if (data.length && data[data.length - 1].id !== lastId) {
+                    lastId = data[data.length - 1].id;
+                    box.innerHTML = data.map(m => `
+                        <div class="flex ${m.mine ? 'justify-end' : 'justify-start'}">
+                          <div class="max-w-md rounded-lg px-3 py-2 text-sm ${m.mine ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}">
+                            <p class="whitespace-pre-line">${m.body.replace(/</g, '&lt;')}</p>
+                            <p class="text-xs opacity-70 mt-1">${m.mine ? 'You' : other} · ${m.time}</p>
+                          </div>
+                        </div>`).join('');
+                }
+            } catch (e) {}
+        }
+        setInterval(poll, 5000);
+    })();
+    </script>
+</div>  {{-- closes the Messages card --}}
