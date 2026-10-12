@@ -105,6 +105,17 @@ Route::middleware(['auth', 'counselor'])
         Route::post('/keywords', [KeywordController::class, 'store'])->name('keywords.store');
         Route::post('/keywords/{keyword}/toggle', [KeywordController::class, 'toggle'])->name('keywords.toggle');
         Route::delete('/keywords/{keyword}', [KeywordController::class, 'destroy'])->name('keywords.destroy');
+
+
+        Route::get('/students', [StudentDataController::class, 'index'])->name('students');
+Route::get('/students/{user}/export', [StudentDataController::class, 'export'])->name('students.export');
+Route::post('/students/{user}/reset-password', [StudentDataController::class, 'resetPassword'])->name('students.reset');
+Route::post('/students/{user}/toggle', [StudentDataController::class, 'toggleActive'])->name('students.toggle');
+Route::delete('/students/{user}', [StudentDataController::class, 'destroy'])->name('students.destroy');
+
+
+
+
     });
     
 Route::middleware('auth')->group(function () {
