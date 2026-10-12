@@ -4,46 +4,37 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="theme-color" content="#6b1a28">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'SafeSpace') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-   <body class="font-sans antialiased bg-paper text-ink">
-        <div class="min-h-screen bg-paper">
+    <body class="font-sans antialiased bg-paper text-ink">
+        <div class="min-h-screen flex flex-col bg-paper">
             @include('layouts.navigation')
 
-            <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <header class="bg-white border-b border-brand-100">
+                    <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
             @endisset
 
-            <!-- Page Content -->
-            <main>
+            <main class="flex-1">
                 {{ $slot }}
             </main>
+
+            <footer class="text-center text-xs text-gray-500 py-5 border-t border-brand-100 bg-white">
+                <a href="{{ route('privacy') }}" class="underline hover:text-brand-700">Privacy Notice</a> · SafeSpace · East Central Integrated School
+            </footer>
         </div>
 
         @auth
-    @if (auth()->user()->isStudent())
-        <x-chatbot-widget />
-    @endif
-@endauth
-
-
-    <footer class="text-center text-xs text-gray-500 py-4">
-    <a href="{{ route('privacy') }}" class="underline">Privacy Notice</a> · SafeSpace · ECIS
-</footer>
-
-
+            @if (auth()->user()->isStudent())
+                <x-chatbot-widget />
+            @endif
+        @endauth
     </body>
 </html>
