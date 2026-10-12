@@ -8,11 +8,11 @@
             <div class="bg-white shadow-sm sm:rounded-lg p-6 text-gray-900">
                 Welcome, {{ auth()->user()->name }}.
                 <a href="{{ route('student.report.create') }}"
-                   class="inline-block mt-4 px-4 py-2 bg-gray-800 text-white rounded-md text-sm">
+                   class="inline-block mt-4 px-4 py-2 bg-brand-700 text-white rounded-md text-sm">
                     Report an Incident
                 </a>
                 <a href="{{ route('student.reports.index') }}"
-                   class="inline-block mt-4 ml-4 px-4 py-2 bg-gray-800 text-white rounded-md text-sm">
+                   class="inline-block mt-4 ml-4 px-4 py-2 bg-brand-700 text-white rounded-md text-sm">
                     My Reports
                 </a>
             </div>
