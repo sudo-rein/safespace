@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Reports</h2>
+        <h2 class="font-bold text-xl text-brand-700 leading-tight">Reports</h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-10">
         <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <p class="font-semibold mb-3">Periodic summary (PDF)</p>
+            <div class="bg-white rounded-2xl border border-brand-100 p-6">
+                <p class="font-semibold mb-3 text-ink">Periodic summary (PDF)</p>
                 <form method="GET" action="{{ route('counselor.reports.periodic') }}" class="space-y-3">
                     <div>
                         <x-input-label for="from" value="From" />
