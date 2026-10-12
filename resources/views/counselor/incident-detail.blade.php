@@ -97,7 +97,7 @@
                 <p>
                     {{ $incident->reporter?->name }}
                     @if ($incident->report_mode === 'confidential')
-                        <span class="ms-2 px-2 py-0.5 rounded-full bg-gray-800 text-white text-xs">Confidential</span>
+                        <span class="ms-2 px-2 py-0.5 rounded-full bg-brand-700 text-white text-xs">Confidential</span>
                     @endif
                 </p>
                 @if ($incident->report_mode === 'confidential')
@@ -135,7 +135,7 @@
         @forelse ($incident->messages as $m)
             @php $mine = $m->sender_id !== $incident->reporter_user_id; @endphp
             <div class="flex {{ $mine ? 'justify-end' : 'justify-start' }}">
-                <div class="max-w-md rounded-lg px-3 py-2 text-sm {{ $mine ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800' }}">
+                <div class="max-w-md rounded-lg px-3 py-2 text-sm {{ $mine ? 'bg-brand-700 text-white' : 'bg-gray-100 text-gray-800' }}">
                     <p class="whitespace-pre-line">{{ $m->body }}</p>
                     <p class="text-xs opacity-70 mt-1">{{ $mine ? 'You' : 'Reporter' }} · {{ $m->created_at->format('M d, g:i A') }}</p>
                 </div>
@@ -166,7 +166,7 @@
             @if ($incident->caseFile->closed_at) (closed) @endif
         </p>
         <a href="{{ route('counselor.cases.show', $incident->caseFile) }}"
-           class="inline-block px-4 py-2 bg-gray-800 text-white rounded-md text-sm">Go to case workspace</a>
+           class="inline-block px-4 py-2 bg-brand-700 text-white rounded-md text-sm">Go to case workspace</a>
     @else
         <form method="POST" action="{{ route('counselor.incidents.case.open', $incident) }}">
             @csrf
@@ -205,7 +205,7 @@
                     lastId = data[data.length - 1].id;
                     box.innerHTML = data.map(m => `
                         <div class="flex ${m.mine ? 'justify-end' : 'justify-start'}">
-                          <div class="max-w-md rounded-lg px-3 py-2 text-sm ${m.mine ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}">
+                          <div class="max-w-md rounded-lg px-3 py-2 text-sm ${m.mine ? 'bg-brand-700 text-white' : 'bg-gray-100 text-gray-800'}">
                             <p class="whitespace-pre-line">${m.body.replace(/</g, '&lt;')}</p>
                             <p class="text-xs opacity-70 mt-1">${m.mine ? 'You' : other} · ${m.time}</p>
                           </div>

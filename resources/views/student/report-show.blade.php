@@ -23,7 +23,7 @@
         @forelse ($messages as $m)
             @php $mine = $m->sender_id === auth()->id(); @endphp
             <div class="flex {{ $mine ? 'justify-end' : 'justify-start' }}">
-                <div class="max-w-md rounded-lg px-3 py-2 text-sm {{ $mine ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800' }}">
+                <div class="max-w-md rounded-lg px-3 py-2 text-sm {{ $mine ? 'bg-brand-700 text-white' : 'bg-gray-100 text-gray-800' }}">
                     <p class="whitespace-pre-line">{{ $m->body }}</p>
                     <p class="text-xs opacity-70 mt-1">{{ $mine ? 'You' : 'Counselor' }} · {{ $m->created_at->format('M d, g:i A') }}</p>
                 </div>
@@ -62,7 +62,7 @@
                 lastId = data[data.length - 1].id;
                 box.innerHTML = data.map(m => `
                     <div class="flex ${m.mine ? 'justify-end' : 'justify-start'}">
-                      <div class="max-w-md rounded-lg px-3 py-2 text-sm ${m.mine ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}">
+                      <div class="max-w-md rounded-lg px-3 py-2 text-sm ${m.mine ? 'bg-brand-700 text-white' : 'bg-gray-100 text-gray-800'}">
                         <p class="whitespace-pre-line">${m.body.replace(/</g, '&lt;')}</p>
                         <p class="text-xs opacity-70 mt-1">${m.mine ? 'You' : other} · ${m.time}</p>
                       </div>
