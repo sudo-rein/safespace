@@ -46,6 +46,8 @@ COPY . .
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 
+# Run Laravel package discovery
+RUN php artisan package:discover --ansi
 # Serve Laravel from its public directory
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
