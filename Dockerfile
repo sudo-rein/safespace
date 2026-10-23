@@ -48,6 +48,7 @@ COPY --from=frontend /app/public/build ./public/build
 
 # Run Laravel package discovery
 RUN php artisan package:discover --ansi
+
 # Serve Laravel from its public directory
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
@@ -66,6 +67,7 @@ RUN sed -ri \
     'sed -i "s/^Listen 80$/Listen ${PORT}/" /etc/apache2/ports.conf' \
     'sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf' \
     'chown -R www-data:www-data storage bootstrap/cache' \
+    'php /var/www/html/check-aiven.php' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-laravel \
     && chmod +x /usr/local/bin/start-laravel
