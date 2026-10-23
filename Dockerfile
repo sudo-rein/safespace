@@ -67,7 +67,9 @@ RUN sed -ri \
     'sed -i "s/^Listen 80$/Listen ${PORT}/" /etc/apache2/ports.conf' \
     'sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf' \
     'chown -R www-data:www-data storage bootstrap/cache' \
-    'su -p -s /bin/sh www-data -c "php /var/www/html/check-aiven.php"' \
+    'test -r /etc/secrets/aiven-ca.pem' \
+    'cp /etc/secrets/aiven-ca.pem /tmp/aiven-ca.pem && chmod 644 /tmp/aiven-ca.pem && chown www-data:www-data /tmp/aiven-ca.pem' \
+    'su -p -s /bin/sh www-data -c "MYSQL_ATTR_SSL_CA=/tmp/aiven-ca.pem php /var/www/html/check-aiven.php"' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-laravel \
     && chmod +x /usr/local/bin/start-laravel
