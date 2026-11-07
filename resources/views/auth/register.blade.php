@@ -225,9 +225,12 @@
                                     required
                                     autocomplete="given-name"
                                     placeholder="Your first name"
+                                    
+                                    oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
                                 />
                                 <x-input-error :messages="$errors->get('first_name')" class="ss-error" />
                             </div>
+                            
 
                             <!-- Last Name -->
                             <div class="ss-field">
@@ -241,6 +244,8 @@
                                     required
                                     autocomplete="family-name"
                                     placeholder="Your last name"
+
+                                    oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"
                                 />
                                 <x-input-error :messages="$errors->get('last_name')" class="ss-error" />
                             </div>

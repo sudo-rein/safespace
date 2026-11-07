@@ -13,32 +13,41 @@ use Illuminate\Support\Facades\Notification;
 
 class MessageController extends Controller
 {
-    public function store(Request $request, Incident $incident): RedirectResponse
-    {
-        Gate::authorize('view', $incident);
+    public function store(Request $request, Incident $incident): RedirectResponse|\Illuminate\Http\JsonResponse
+{
+    Gate::authorize('view', $incident);
 
-        $data = $request->validate([
-            'body' => ['required', 'string', 'min:1', 'max:2000'],
-        ]);
+    $data = $request->validate([
+        'body' => ['required', 'string', 'min:1', 'max:2000'],
+    ]);
 
-        $incident->messages()->create([
-            'sender_id' => $request->user()->id,
-            'body' => $data['body'],
-        ]);
+    $message = $incident->messages()->create([
+        'sender_id' => $request->user()->id,
+        'body' => $data['body'],
+    ]);
 
-        try {
-            Notification::send(
-                User::where('role', 'counselor')
-                    ->where('is_active', true)
-                    ->get(),
-                new NewChatMessage($incident)
-            );
-        } catch (\Throwable $e) {
-            report($e);
-        }
-
-        return back();
+    try {
+        Notification::send(
+            User::where('role', 'counselor')
+                ->where('is_active', true)
+                ->get(),
+            new NewChatMessage($incident)
+        );
+    } catch (\Throwable $e) {
+        report($e);
     }
+
+    if ($request->expectsJson()) {
+        return response()->json([
+            'id'   => $message->id,
+            'body' => $message->body,
+            'mine' => true,
+            'time' => $message->created_at->format('M d, g:i A'),
+        ]);
+    }
+
+    return back();
+}
 
     public function index(Incident $incident)
     {

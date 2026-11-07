@@ -45,6 +45,8 @@ Route::middleware(['auth', 'student'])
     ->group(function () {
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
+        Route::get('/reports/export/{format}', [ReportController::class, 'export'])->name('reports.export');
+
         Route::get('/report', [ReportController::class, 'create'])->name('report.create');
         Route::post('/report', [ReportController::class, 'store'])->name('report.store');
         Route::get('/report/{incident}/confirmation', [ReportController::class, 'confirmation'])->name('report.confirmation');
@@ -88,6 +90,9 @@ Route::middleware(['auth', 'counselor'])
         Route::post('/cases/{case}/close', [CaseController::class, 'close'])->name('cases.close');
         Route::get('/cases/{case}/pdf', [CaseController::class, 'pdf'])->name('cases.pdf');Route::get('/reports', [ReportExportController::class, 'index'])->name('reports');
         Route::get('/reports/periodic', [ReportExportController::class, 'periodic'])->name('reports.periodic');
+
+
+        Route::get('/reports/list', [ReportExportController::class, 'list'])->name('reports.list');
 
 
         Route::post('/incidents/{incident}/messages', [CounselorMessageController::class, 'store'])->name('incidents.messages');

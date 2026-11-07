@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Notifications\NewIncidentAlert;
 use App\Notifications\UrgentIncidentAlert;
 use Illuminate\Support\Facades\Notification;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -40,7 +41,8 @@ class ReportController extends Controller
             'repeated' => ['nullable', 'boolean'],
             'someone_hurt' => ['nullable', 'boolean'],
             'parties' => ['nullable', 'array', 'max:10'],
-            'parties.*.name' => ['nullable', 'string', 'max:150'],
+        
+            'parties.*.name' => ['nullable', 'string', 'max:150', "regex:/^[\pL\s.'\-]+$/u"],
             'parties.*.role' => ['nullable', 'in:victim,aggressor,witness'],
             'evidence' => ['nullable', 'array', 'max:3'],
             'evidence.*' => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
@@ -56,7 +58,7 @@ class ReportController extends Controller
                 'description' => $data['description'],
                 'repeated' => $request->boolean('repeated'),
                 'someone_hurt' => $request->boolean('someone_hurt'),
-                'incident_time' => $data['incident_time'],
+                'incident_time' => $data['incident_time'] ?? null,
                 'status' => 'submitted',
                 'submitted_at' => now(),
             ]);
@@ -149,6 +151,14 @@ if ($assessment?->urgent_flag || in_array($incident->risk_level, ['medium', 'hig
 
 $incident->load('location');
 
+
+
+
+
+
+
+
+
 // Opening the report marks the counselor's messages as read
 $incident->messages()
     ->where('sender_id', '!=', auth()->id())
@@ -159,4 +169,30 @@ $messages = $incident->messages()->get();
 
 return view('student.report-show', ['incident' => $incident, 'messages' => $messages]);
     }
+    public function export(string $format)
+{
+    abort_unless(in_array($format, ['pdf', 'csv'], true), 404);
+
+    $incidents = Incident::with('location')
+        ->where('reporter_user_id', auth()->id())
+        ->latest('submitted_at')->get();
+
+    if ($format === 'pdf') {
+        return Pdf::loadView('student.reports-pdf', ['incidents' => $incidents, 'user' => auth()->user()])
+            ->setPaper('a4')->download('My-SafeSpace-Reports.pdf');
+    }
+
+    return response()->streamDownload(function () use ($incidents) {
+        $out = fopen('php://output', 'w');
+        fwrite($out, "\xEF\xBB\xBF");
+        fputcsv($out, ['Reference', 'Submitted', 'Incident date', 'Place', 'Reported as', 'Status']);
+        foreach ($incidents as $i) {
+            fputcsv($out, [
+                $i->tracking_code, $i->submitted_at->format('Y-m-d H:i'), $i->incident_date->format('Y-m-d'),
+                $i->location?->name, $i->report_mode === 'confidential' ? 'Confidential' : 'Named', $i->studentStatus(),
+            ]);
+        }
+        fclose($out);
+    }, 'My-SafeSpace-Reports.csv', ['Content-Type' => 'text/csv']);
+}
 }

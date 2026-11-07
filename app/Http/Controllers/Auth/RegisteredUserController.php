@@ -25,9 +25,13 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'lrn' => ['required', 'digits:12', 'unique:students,lrn', 'unique:users,lrn'],
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name' => ['required', 'string', 'max:100'],
-            'grade_level' => ['required', 'string', 'in:7,8,9,10,11,12'],
+            
+            'first_name' => ['required', 'string', 'max:100', "regex:/^[\pL\s.'\-]+$/u"],
+            'last_name' => ['required', 'string', 'max:100', "regex:/^[\pL\s.'\-]+$/u"],
+
+            'first_name.regex' => 'First name can only contain letters, spaces, and . \' -',
+            'last_name.regex' => 'Last name can only contain letters, spaces, and . \' -',
+            
             'section' => ['required', 'string', 'max:50'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'privacy_consent' => ['accepted'],

@@ -1,4 +1,4 @@
-<x-app-layout>
+wa<x-app-layout>
     <x-slot name="header">
         <h2 class="font-bold text-xl text-brand-700 leading-tight">Report an Incident</h2>
     </x-slot>
@@ -60,23 +60,36 @@
                 </div>
 
                 {{-- People involved --}}
-                <div>
-                    <p class="font-semibold text-ink">Who was involved? <span class="text-sm font-normal text-gray-500">(optional)</span></p>
-                    @for ($i = 0; $i < 3; $i++)
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2">
-                            <input type="text" name="parties[{{ $i }}][name]" placeholder="Name"
-                                   value="{{ old("parties.$i.name") }}"
-                                   class="sm:col-span-2 border-gray-300 focus:border-brand-500 focus:ring-brand-500 rounded-[11px] shadow-sm">
-                            <select name="parties[{{ $i }}][role]"
-                                    class="border-gray-300 focus:border-brand-500 focus:ring-brand-500 rounded-[11px] shadow-sm">
-                                <option value="">Role</option>
-                                <option value="victim" @selected(old("parties.$i.role") === 'victim')>Victim</option>
-                                <option value="aggressor" @selected(old("parties.$i.role") === 'aggressor')>Aggressor</option>
-                                <option value="witness" @selected(old("parties.$i.role") === 'witness')>Witness</option>
-                            </select>
-                        </div>
-                    @endfor
-                </div>
+<div x-data="{ rows: @js(old('parties', [['name' => '', 'role' => 'victim']])) }">
+    <p class="font-semibold text-ink">Who was involved? <span class="text-sm font-normal text-gray-500">(optional)</span></p>
+
+    <template x-for="(p, i) in rows" :key="i">
+        <div class="mt-3 p-3 rounded-xl border border-brand-100 space-y-2">
+            <div class="flex gap-2">
+                <input type="text" :name="'parties[' + i + '][name]'" x-model="p.name" placeholder="Name"
+                       oninput="this.value = this.value.replace(/[0-9]/g, '')"
+                       class="flex-1 border-gray-300 focus:border-brand-500 focus:ring-brand-500 rounded-[11px] shadow-sm">
+                <button type="button" @click="rows.splice(i, 1)" x-show="rows.length > 1"
+                        class="px-3 text-sm text-red-600 hover:bg-red-50 rounded-[11px]">Remove</button>
+            </div>
+            <div class="flex flex-wrap gap-4 text-sm">
+                <label class="inline-flex items-center gap-1.5">
+                    <input type="radio" :name="'parties[' + i + '][role]'" value="victim" x-model="p.role" class="text-brand-700 focus:ring-brand-500"> Victim
+                </label>
+                <label class="inline-flex items-center gap-1.5">
+                    <input type="radio" :name="'parties[' + i + '][role]'" value="witness" x-model="p.role" class="text-brand-700 focus:ring-brand-500"> Witness
+                </label>
+                <label class="inline-flex items-center gap-1.5">
+                    <input type="radio" :name="'parties[' + i + '][role]'" value="aggressor" x-model="p.role" class="text-brand-700 focus:ring-brand-500"> Aggressor
+                </label>
+            </div>
+        </div>
+    </template>
+
+    <button type="button" @click="rows.push({ name: '', role: 'victim' })" x-show="rows.length < 10"
+            class="mt-3 text-sm font-semibold text-brand-700 hover:underline">+ Add another person</button>
+    <x-input-error :messages="$errors->get('parties.*.name')" class="mt-2" />
+</div>
 
                 {{-- Description --}}
                 <div>

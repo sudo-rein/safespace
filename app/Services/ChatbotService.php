@@ -19,12 +19,14 @@ class ChatbotService
                 return [
                     'answer' => config('chatbot.crisis_message'),
                     'hotlines' => config('chatbot.hotlines'),
+                    'links' => [['label' => 'Message the counselor through a report', 'url' => route('student.report.create')]],
+                    'suggestions' => [],
                     'crisis' => true,
                 ];
             }
         }
 
-        // Pick the topic with the most keyword hits
+        // Pick the topic with the best score (longer phrases count more)
         $best = null;
         $bestScore = 0;
 
@@ -32,7 +34,7 @@ class ChatbotService
             $score = 0;
             foreach ($topic['keywords'] as $kw) {
                 if (str_contains($text, ' ' . TextNormalizer::normalize($kw) . ' ')) {
-                    $score++;
+                    $score += 1 + substr_count($kw, ' ');
                 }
             }
             if ($score > $bestScore) {
@@ -41,9 +43,24 @@ class ChatbotService
             }
         }
 
+        if (! $best) {
+            return [
+                'answer' => config('chatbot.fallback'),
+                'hotlines' => [],
+                'links' => [],
+                'suggestions' => config('chatbot.suggestions'),
+                'crisis' => false,
+            ];
+        }
+
         return [
-            'answer' => $best['answer'] ?? config('chatbot.fallback'),
-            'hotlines' => [],
+            'answer' => $best['answer'],
+            'hotlines' => ! empty($best['show_hotlines']) ? config('chatbot.hotlines') : [],
+            'links' => array_map(
+                fn ($l) => ['label' => $l['label'], 'url' => route($l['route'])],
+                $best['links'] ?? []
+            ),
+            'suggestions' => [],
             'crisis' => false,
         ];
     }

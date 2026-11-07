@@ -10,21 +10,30 @@ use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    public function store(Request $request, Incident $incident): RedirectResponse
-    {
-        $data = $request->validate([
-            'body' => ['required', 'string', 'min:1', 'max:2000'],
+    public function store(Request $request, Incident $incident)
+{
+    $data = $request->validate([
+        'body' => ['required', 'string', 'min:1', 'max:2000'],
+    ]);
+
+    $message = $incident->messages()->create([
+        'sender_id' => $request->user()->id,
+        'body' => $data['body'],
+    ]);
+
+    AuditLogger::log('sent_message', $incident);
+
+    if ($request->expectsJson()) {
+        return response()->json([
+            'id' => $message->id,
+            'body' => $message->body,
+            'mine' => true,
+            'time' => $message->created_at->format('M d, g:i A'),
         ]);
-
-        $incident->messages()->create([
-            'sender_id' => $request->user()->id,
-            'body' => $data['body'],
-        ]);
-
-        AuditLogger::log('sent_message', $incident);
-
-        return back()->with('status', 'Message sent.');
     }
+
+    return back()->with('status', 'Message sent.');
+}
 
     public function index(Incident $incident)
 {
