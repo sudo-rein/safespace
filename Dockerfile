@@ -14,6 +14,7 @@ FROM composer:2 AS vendor
 WORKDIR /app
 
 COPY composer.json composer.lock ./
+
 RUN composer install \
     --no-dev \
     --no-interaction \
@@ -46,34 +47,35 @@ COPY . .
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 
-# Run Laravel package discovery
+# Laravel package discovery
 RUN php artisan package:discover --ansi
 
-# Serve Laravel from its public directory
+# Configure Apache document root
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN sed -ri \
     -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
     /etc/apache2/sites-available/000-default.conf \
-    && printf '<Directory /var/www/html/public>\n\
-    AllowOverride All\n\
-    Require all granted\n\
-    </Directory>\n' \
-    >> /etc/apache2/apache2.conf \
     && printf '%s\n' \
+    '<Directory /var/www/html/public>' \
+    '    AllowOverride All' \
+    '    Require all granted' \
+    '</Directory>' \
+    >> /etc/apache2/apache2.conf
+
+# Railway startup script
+RUN printf '%s\n' \
     '#!/bin/sh' \
     'set -eu' \
-    'PORT="${PORT:-10000}"' \
+    'PORT="${PORT:-8080}"' \
     'sed -i "s/^Listen 80$/Listen ${PORT}/" /etc/apache2/ports.conf' \
     'sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf' \
+    'mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache' \
     'chown -R www-data:www-data storage bootstrap/cache' \
-    'test -r /etc/secrets/aiven-ca.pem' \
-    'cp /etc/secrets/aiven-ca.pem /tmp/aiven-ca.pem && chmod 644 /tmp/aiven-ca.pem && chown www-data:www-data /tmp/aiven-ca.pem' \
-    'su -p -s /bin/sh www-data -c "MYSQL_ATTR_SSL_CA=/tmp/aiven-ca.pem php /var/www/html/check-aiven.php"' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-laravel \
     && chmod +x /usr/local/bin/start-laravel
 
-EXPOSE 10000
+EXPOSE 8080
 
 CMD ["/usr/local/bin/start-laravel"]
