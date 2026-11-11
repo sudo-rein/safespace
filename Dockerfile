@@ -97,8 +97,18 @@ RUN printf '%s\n' \
     'sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf' \
     'mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache' \
     'chown -R www-data:www-data storage bootstrap/cache' \
-    'echo "===== RUNTIME ENABLED MPM FILES ====="' \
-    'ls -la /etc/apache2/mods-enabled/mpm_* || true' \
+
+    'rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf' \
+'rm -f /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf' \
+'a2enmod mpm_prefork rewrite' \
+'echo "===== FINAL RUNTIME MPM CHECK ====="' \
+'ls -la /etc/apache2/mods-enabled/mpm_*' \
+'test -e /etc/apache2/mods-enabled/mpm_prefork.load' \
+'test ! -e /etc/apache2/mods-enabled/mpm_event.load' \
+'test ! -e /etc/apache2/mods-enabled/mpm_worker.load' \
+'apache2ctl -t' \
+'exec apache2-foreground' \
+
     'echo "===== RUNTIME MPM LOAD DIRECTIVES ====="' \
     'grep -RInE "LoadModule[[:space:]]+mpm_" /etc/apache2 || true' \
     'echo "===== RUNTIME APACHE CONFIG TEST ====="' \
