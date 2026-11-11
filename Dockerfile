@@ -29,6 +29,7 @@ RUN composer install \
 # Run Laravel with Apache
 FROM php:8.3-apache-bookworm
 
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev \
     libonig-dev \
@@ -42,10 +43,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         intl \
         opcache \
         zip \
-    && rm -f /etc/apache2/mods-enabled/mpm_*.load \
-             /etc/apache2/mods-enabled/mpm_*.conf \
+    && find /etc/apache2/mods-enabled -maxdepth 1 \
+        \( -name 'mpm_*.load' -o -name 'mpm_*.conf' \) \
+        -delete \
     && a2enmod mpm_prefork rewrite \
+    && apache2ctl -M \
     && rm -rf /var/lib/apt/lists/*
+
 
 
 WORKDIR /var/www/html
