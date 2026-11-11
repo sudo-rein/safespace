@@ -88,10 +88,9 @@ Route::middleware(['auth', 'counselor'])
         Route::post('/cases/{case}/follow-ups/{followUp}/done', [CaseController::class, 'completeFollowUp'])->name('cases.followups.done');
         Route::post('/cases/{case}/status', [CaseController::class, 'updateStatus'])->name('cases.status');
         Route::post('/cases/{case}/close', [CaseController::class, 'close'])->name('cases.close');
-        Route::get('/cases/{case}/pdf', [CaseController::class, 'pdf'])->name('cases.pdf');Route::get('/reports', [ReportExportController::class, 'index'])->name('reports');
+        Route::get('/cases/{case}/pdf', [CaseController::class, 'pdf'])->name('cases.pdf');
+        Route::get('/reports', [ReportExportController::class, 'index'])->name('reports');
         Route::get('/reports/periodic', [ReportExportController::class, 'periodic'])->name('reports.periodic');
-
-
         Route::get('/reports/list', [ReportExportController::class, 'list'])->name('reports.list');
 
 

@@ -9,6 +9,7 @@ use App\Models\RiskAssessment;
 use App\Services\AuditLogger;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 
 class ReportExportController extends Controller
@@ -25,8 +26,8 @@ class ReportExportController extends Controller
             'to' => ['required', 'date', 'after_or_equal:from'],
         ]);
 
-        $from = \Illuminate\Support\Carbon::parse($data['from'])->startOfDay();
-        $to = \Illuminate\Support\Carbon::parse($data['to'])->endOfDay();
+        $from = Carbon::parse($data['from'])->startOfDay();
+        $to = Carbon::parse($data['to'])->endOfDay();
 
         $base = fn () => Incident::whereBetween('submitted_at', [$from, $to]);
 
@@ -58,5 +59,42 @@ class ReportExportController extends Controller
         return Pdf::loadView('counselor.periodic-pdf', compact('stats', 'byLocation', 'byMonth', 'from', 'to'))
             ->setPaper('a4')
             ->download('SafeSpace-Report-' . $from->format('Ymd') . '-' . $to->format('Ymd') . '.pdf');
+    }
+
+    public function list(Request $request)
+    {
+        $data = $request->validate([
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date', 'after_or_equal:from'],
+            'risk' => ['nullable', 'in:low,medium,high'],
+            'format' => ['required', 'in:pdf,csv'],
+        ]);
+
+        $incidents = Incident::with(['location', 'assessment'])
+            ->when($data['from'] ?? null, fn ($q, $d) => $q->whereDate('submitted_at', '>=', $d))
+            ->when($data['to'] ?? null, fn ($q, $d) => $q->whereDate('submitted_at', '<=', $d))
+            ->when($data['risk'] ?? null, fn ($q, $r) => $q->where('risk_level', $r))
+            ->latest('submitted_at')->get();
+
+        AuditLogger::log('exported_report_list');
+
+        if ($data['format'] === 'pdf') {
+            return Pdf::loadView('counselor.list-pdf', compact('incidents'))
+                ->setPaper('a4', 'landscape')->download('SafeSpace-Report-List.pdf');
+        }
+
+        return response()->streamDownload(function () use ($incidents) {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['Reference', 'Submitted', 'Incident date', 'Time', 'Place', 'Risk', 'Urgent', 'Status']);
+            foreach ($incidents as $i) {
+                fputcsv($out, [
+                    $i->tracking_code, $i->submitted_at->format('Y-m-d H:i'), Carbon::parse($i->incident_date)->format('Y-m-d'),
+                    $i->incident_time, $i->location?->name, ucfirst((string) $i->risk_level),
+                    $i->assessment?->urgent_flag ? 'Yes' : 'No', ucfirst(str_replace('_', ' ', $i->status)),
+                ]);
+            }
+            fclose($out);
+        }, 'SafeSpace-Report-List.csv', ['Content-Type' => 'text/csv']);
     }
 }
