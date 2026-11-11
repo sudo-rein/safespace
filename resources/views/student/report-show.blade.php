@@ -33,8 +33,7 @@
                 <div class="border-t border-brand-100 pt-4">
                     <p class="font-semibold mb-2">Messages with the guidance counselor</p>
 
-                   <div class="border-t border-brand-100 pt-4">
-    <p class="font-semibold mb-2">Messages with the guidance counselor</p>
+                   
     @php
         $chatMessages = $messages->map(fn ($m) => [
             'id' => $m->id, 'body' => $m->body,
