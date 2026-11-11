@@ -30,6 +30,7 @@ RUN composer install \
 FROM php:8.3-apache-bookworm
 
 
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev \
     libonig-dev \
@@ -43,12 +44,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         intl \
         opcache \
         zip \
-    && find /etc/apache2/mods-enabled -maxdepth 1 \
-        \( -name 'mpm_*.load' -o -name 'mpm_*.conf' \) \
-        -delete \
+    && rm -f /etc/apache2/mods-enabled/mpm_* \
     && a2enmod mpm_prefork rewrite \
-    && apache2ctl -M \
-    && rm -rf /var/lib/apt/lists/*
+    && echo "===== ENABLED MPM FILES =====" \
+    && find /etc/apache2/mods-enabled -maxdepth 1 -name 'mpm_*' -ls \
+    && echo "===== MPM LOAD DIRECTIVES =====" \
+    && grep -RInE '^[[:space:]]*LoadModule[[:space:]]+mpm_' \
+        /etc/apache2/mods-enabled /etc/apache2/conf-enabled /etc/apache2/apache2.conf || true
 
 
 
