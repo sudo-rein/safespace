@@ -81,6 +81,7 @@ RUN sed -ri \
         >> /etc/apache2/apache2.conf
 
 
+
 # Railway startup script
 RUN printf '%s\n' \
     '#!/bin/sh' \
@@ -90,11 +91,15 @@ RUN printf '%s\n' \
     'sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf' \
     'mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache' \
     'chown -R www-data:www-data storage bootstrap/cache' \
+    'echo "===== RUNTIME ENABLED MPM FILES ====="' \
+    'ls -la /etc/apache2/mods-enabled/mpm_* || true' \
+    'echo "===== RUNTIME MPM LOAD DIRECTIVES ====="' \
+    'grep -RInE "LoadModule[[:space:]]+mpm_" /etc/apache2 || true' \
+    'echo "===== RUNTIME APACHE CONFIG TEST ====="' \
+    'apache2ctl -t' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-laravel \
     && chmod +x /usr/local/bin/start-laravel
 
-
-EXPOSE 8080
 
 CMD ["/usr/local/bin/start-laravel"]
