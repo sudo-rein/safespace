@@ -32,27 +32,27 @@ FROM php:8.3-apache-bookworm
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libicu-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    unzip \
-    && docker-php-ext-install \
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        libicu-dev \
+        libonig-dev \
+        libxml2-dev \
+        libzip-dev \
+        unzip; \
+    docker-php-ext-install \
         pdo_mysql \
         mbstring \
         bcmath \
         intl \
         opcache \
-        zip \
-    && echo "===== AVAILABLE MPM MODULES =====" \
-    && ls -la /etc/apache2/mods-available/mpm_* \
-    && echo "===== ENABLED MPM MODULES =====" \
-    && find /etc/apache2/mods-enabled -maxdepth 1 -name 'mpm_*' -ls \
-    && echo "===== APACHE MODULE CONFIGURATION =====" \
-    && grep -RInE 'LoadModule[[:space:]]+mpm_' /etc/apache2 \
-    && echo "===== APACHE MODULE LIST =====" \
-    && apache2ctl -M
+        zip; \
+    a2dismod mpm_event mpm_worker || true; \
+    a2enmod mpm_prefork rewrite; \
+    apache2ctl -t; \
+    rm -rf /var/lib/apt/lists/*
+
 
 
 
