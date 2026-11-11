@@ -1,4 +1,4 @@
-wa<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-bold text-xl text-brand-700 leading-tight">Report an Incident</h2>
     </x-slot>
