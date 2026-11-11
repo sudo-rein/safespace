@@ -40,7 +40,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip \
     && rm -f /etc/apache2/mods-enabled/mpm_event.* \
          /etc/apache2/mods-enabled/mpm_worker.* \
-&& a2enmod mpm_prefork rewrite \
+    && a2enmod mpm_prefork rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 
