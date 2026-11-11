@@ -1,6 +1,7 @@
 
 # Build the Vite frontend
 FROM node:22-alpine AS frontend
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -9,8 +10,10 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+
 # Install production PHP dependencies
 FROM composer:2 AS vendor
+
 WORKDIR /app
 
 COPY composer.json composer.lock ./
@@ -22,6 +25,7 @@ RUN composer install \
     --optimize-autoloader \
     --no-scripts
 
+
 # Run Laravel with Apache
 FROM php:8.3-apache-bookworm
 
@@ -32,15 +36,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     unzip \
     && docker-php-ext-install \
-    pdo_mysql \
-    mbstring \
-    bcmath \
-    intl \
-    opcache \
-    zip \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.* \
-         /etc/apache2/mods-enabled/mpm_worker.* \
-&& a2enmod mpm_prefork rewrite \
+        pdo_mysql \
+        mbstring \
+        bcmath \
+        intl \
+        opcache \
+        zip \
+    && rm -f /etc/apache2/mods-enabled/mpm_*.load \
+             /etc/apache2/mods-enabled/mpm_*.conf \
+    && a2enmod mpm_prefork rewrite \
+    && rm -rf /var/lib/apt/lists/*
+
 
 WORKDIR /var/www/html
 
@@ -48,8 +54,10 @@ COPY . .
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 
+
 # Laravel package discovery
 RUN php artisan package:discover --ansi
+
 
 # Configure Apache document root
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
@@ -58,11 +66,12 @@ RUN sed -ri \
     -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
     /etc/apache2/sites-available/000-default.conf \
     && printf '%s\n' \
-    '<Directory /var/www/html/public>' \
-    '    AllowOverride All' \
-    '    Require all granted' \
-    '</Directory>' \
-    >> /etc/apache2/apache2.conf
+        '<Directory /var/www/html/public>' \
+        '    AllowOverride All' \
+        '    Require all granted' \
+        '</Directory>' \
+        >> /etc/apache2/apache2.conf
+
 
 # Railway startup script
 RUN printf '%s\n' \
@@ -76,6 +85,7 @@ RUN printf '%s\n' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-laravel \
     && chmod +x /usr/local/bin/start-laravel
+
 
 EXPOSE 8080
 
