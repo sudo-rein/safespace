@@ -33,6 +33,7 @@ FROM php:8.3-apache-bookworm
 
 
 
+
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -48,11 +49,16 @@ RUN set -eux; \
         intl \
         opcache \
         zip; \
-    a2dismod mpm_event mpm_worker || true; \
+    rm -f /etc/apache2/mods-enabled/mpm_*.load \
+          /etc/apache2/mods-enabled/mpm_*.conf; \
     a2enmod mpm_prefork rewrite; \
+    echo "===== VERIFY ENABLED MPM ====="; \
+    ls -la /etc/apache2/mods-enabled/mpm_*; \
+    test -e /etc/apache2/mods-enabled/mpm_prefork.load; \
+    test ! -e /etc/apache2/mods-enabled/mpm_event.load; \
+    test ! -e /etc/apache2/mods-enabled/mpm_worker.load; \
     apache2ctl -t; \
     rm -rf /var/lib/apt/lists/*
-
 
 
 
