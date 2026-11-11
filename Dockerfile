@@ -31,6 +31,7 @@ FROM php:8.3-apache-bookworm
 
 
 
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev \
     libonig-dev \
@@ -44,13 +45,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         intl \
         opcache \
         zip \
-    && rm -f /etc/apache2/mods-enabled/mpm_* \
-    && a2enmod mpm_prefork rewrite \
-    && echo "===== ENABLED MPM FILES =====" \
+    && echo "===== AVAILABLE MPM MODULES =====" \
+    && ls -la /etc/apache2/mods-available/mpm_* \
+    && echo "===== ENABLED MPM MODULES =====" \
     && find /etc/apache2/mods-enabled -maxdepth 1 -name 'mpm_*' -ls \
-    && echo "===== MPM LOAD DIRECTIVES =====" \
-    && grep -RInE '^[[:space:]]*LoadModule[[:space:]]+mpm_' \
-        /etc/apache2/mods-enabled /etc/apache2/conf-enabled /etc/apache2/apache2.conf || true
+    && echo "===== APACHE MODULE CONFIGURATION =====" \
+    && grep -RInE 'LoadModule[[:space:]]+mpm_' /etc/apache2 \
+    && echo "===== APACHE MODULE LIST =====" \
+    && apache2ctl -M
 
 
 
